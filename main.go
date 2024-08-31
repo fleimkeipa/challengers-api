@@ -39,8 +39,12 @@ func serveApplication() {
 	var mongo = initDB()
 
 	var userRepo = repositories.NewUserRepository(mongo)
-	var userCommands = uc.NewUserUC(userRepo)
-	var userHandlers = controller.NewUserHandlers(userCommands)
+	var userUC = uc.NewUserUC(userRepo)
+	var userHandlers = controller.NewUserHandlers(userUC)
+
+	var challengeRepo = repositories.NewChallengeRepository(mongo)
+	var challengeUC = uc.NewChallengeUC(challengeRepo)
+	var challengeHandlers = controller.NewChallengeHandlers(challengeUC)
 
 	var authRoutes = e.Group("/auth")
 	authRoutes.POST("/register", userHandlers.Register)
@@ -50,9 +54,9 @@ func serveApplication() {
 	adminRoutes.Use(util.JWTAuth)
 	adminRoutes.GET("", controller.Welcome)
 
-	var challengerRoutes = e.Group("challenger")
-	challengerRoutes.Use(util.JWTAuthChallenger)
-	challengerRoutes.GET("", controller.Welcome)
+	var challengeRoutes = e.Group("challenge")
+	challengeRoutes.Use(util.JWTAuthChallenger)
+	challengeRoutes.POST("", challengeHandlers.Create)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

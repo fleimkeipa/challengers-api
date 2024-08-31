@@ -14,12 +14,12 @@ import (
 )
 
 type UserHandlers struct {
-	uc *uc.UserUC
+	userUC *uc.UserUC
 }
 
 func NewUserHandlers(uc *uc.UserUC) *UserHandlers {
 	return &UserHandlers{
-		uc: uc,
+		userUC: uc,
 	}
 }
 
@@ -38,7 +38,7 @@ func (rc *UserHandlers) Register(c echo.Context) error {
 		RoleID:   2,
 	}
 
-	_, err := rc.uc.Create(c.Request().Context(), user)
+	_, err := rc.userUC.Create(c.Request().Context(), user)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
 	}
@@ -63,7 +63,7 @@ func (rc *UserHandlers) Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": errorMessage})
 	}
 
-	user, err := rc.uc.GetUserByUsername(c.Request().Context(), input.Username)
+	user, err := rc.userUC.GetUserByUsername(c.Request().Context(), input.Username)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
 	}
