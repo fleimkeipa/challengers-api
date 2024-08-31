@@ -35,7 +35,7 @@ func (rc *UserHandlers) Register(c echo.Context) error {
 		Username: input.Username,
 		Email:    input.Email,
 		Password: input.Password,
-		RoleID:   2,
+		RoleID:   input.RoleID,
 	}
 
 	_, err := rc.userUC.Create(c.Request().Context(), user)
