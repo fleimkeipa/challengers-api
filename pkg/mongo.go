@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,13 +11,12 @@ import (
 
 func MongoConnect() (*mongo.Database, error) {
 	var uri = "mongodb://localhost:27017"
-	if os.Getenv("STAGE") == "prod" {
+	if stage() {
 		uri = "mongodb://mongodb:27017"
 	}
 
 	// Set client options
 	var clientOptions = options.Client().ApplyURI(uri)
-	clientOptions.SetDirect(true)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.Background(), clientOptions)
@@ -25,10 +25,16 @@ func MongoConnect() (*mongo.Database, error) {
 	}
 
 	// Check the connection
-	if err = client.Ping(context.Background(), nil); err != nil {
+	if err := client.Ping(context.Background(), nil); err != nil {
 		return nil, err
 	}
 
 	// Set the database and collection variables
 	return client.Database(os.Getenv("DATABASE_NAME")), nil
+}
+
+func stage() bool {
+	_, isVirtual := os.LookupEnv("HOSTNAME")
+	fmt.Printf("\nProgram is running inside a Docker container. %v\n", isVirtual)
+	return isVirtual
 }

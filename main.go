@@ -8,11 +8,11 @@ import (
 	"github.com/fleimkeipa/challengers-api/repositories"
 	"github.com/fleimkeipa/challengers-api/uc"
 	"github.com/fleimkeipa/challengers-api/util"
-	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func main() {
