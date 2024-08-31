@@ -12,6 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var userCollection = "users"
+
 type UserRepository struct {
 	db *mongo.Database
 }
@@ -23,15 +25,9 @@ func NewUserRepository(db *mongo.Database) *UserRepository {
 }
 
 func (rc *UserRepository) Create(ctx context.Context, user model.User) (model.User, error) {
-	hashedPassword, err := model.HashPassword(user.Password)
-	if err != nil {
-		return model.User{}, err
-	}
-	user.Password = hashedPassword
-
 	query, err := rc.
 		db.
-		Collection("users").
+		Collection(userCollection).
 		InsertOne(ctx, &user)
 	if err != nil {
 		return model.User{}, fmt.Errorf("failed to create user: %w", err)
@@ -51,7 +47,7 @@ func (rc *UserRepository) GetUserByUsername(ctx context.Context, username string
 	var user = new(model.User)
 	err := rc.
 		db.
-		Collection("users").
+		Collection(userCollection).
 		FindOne(ctx, bson.M{"username": username}).
 		Decode(user)
 	if err != nil {

@@ -18,6 +18,12 @@ func NewUserUC(repo interfaces.UserInterfaces) *UserUC {
 }
 
 func (rc *UserUC) Create(ctx context.Context, user model.User) (model.User, error) {
+	hashedPassword, err := model.HashPassword(user.Password)
+	if err != nil {
+		return model.User{}, err
+	}
+	user.Password = hashedPassword
+
 	return rc.repo.Create(ctx, user)
 }
 
