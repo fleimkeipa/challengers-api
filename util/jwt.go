@@ -20,12 +20,13 @@ var privateKey = []byte(os.Getenv("JWT_PRIVATE_KEY"))
 // generate JWT token
 func GenerateJWT(user model.User) (string, error) {
 	tokenTTL, _ := strconv.Atoi(os.Getenv("TOKEN_TTL"))
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	var token = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":   user.ID,
 		"role": user.RoleID,
 		"iat":  time.Now().Unix(),
 		"eat":  time.Now().Add(time.Second * time.Duration(tokenTTL)).Unix(),
 	})
+
 	return token.SignedString(privateKey)
 }
 
@@ -35,10 +36,16 @@ func ValidateJWT(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+
+	if !token.Valid {
+		return errors.New("invalid token")
+	}
+
 	_, ok := token.Claims.(jwt.MapClaims)
-	if ok && token.Valid {
+	if ok {
 		return nil
 	}
+
 	return errors.New("invalid token provided")
 }
 
@@ -49,9 +56,17 @@ func ValidateAdminRoleJWT(context echo.Context) error {
 		return err
 	}
 
+	if !token.Valid {
+		return errors.New("invalid token")
+	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return errors.New("invalid token claims")
+	}
+
 	userRole := uint(claims["role"].(float64))
-	if ok && token.Valid && userRole == model.AdminRole {
+	if userRole == model.AdminRole {
 		return nil
 	}
 
