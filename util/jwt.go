@@ -65,9 +65,17 @@ func ValidateChallengerRoleJWT(context echo.Context) error {
 		return err
 	}
 
+	if !token.Valid {
+		return errors.New("invalid token")
+	}
+
 	claims, ok := token.Claims.(jwt.MapClaims)
-	userRole := uint(claims["role"].(float64))
-	if ok && token.Valid && userRole == model.ChallengerRole || userRole == model.AdminRole {
+	if !ok {
+		return errors.New("invalid token claims")
+	}
+
+	var userRole = uint(claims["role"].(float64))
+	if userRole == model.ChallengerRole || userRole == model.AdminRole {
 		return nil
 	}
 

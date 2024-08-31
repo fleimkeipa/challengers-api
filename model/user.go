@@ -16,7 +16,7 @@ type User struct {
 }
 
 // VerifyPassword verifies if the given password matches the stored hash.
-func ValidateUserPassword(password, hash string) error {
+func ValidateUserPassword(hash, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
