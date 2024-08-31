@@ -2,6 +2,7 @@ package uc
 
 import (
 	"context"
+	"time"
 
 	"github.com/fleimkeipa/challengers-api/model"
 	"github.com/fleimkeipa/challengers-api/repositories/interfaces"
@@ -18,5 +19,7 @@ func NewChallengeUC(repo interfaces.ChallengeInterfaces) *ChallengeUC {
 }
 
 func (rc *ChallengeUC) Create(ctx context.Context, challenge model.Challenge) (model.Challenge, error) {
+	challenge.CreatedAt = time.Now()
+
 	return rc.repo.Create(ctx, challenge)
 }

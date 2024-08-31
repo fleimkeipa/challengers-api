@@ -10,5 +10,5 @@ type ChallengeRequest struct {
 type Challenge struct {
 	ID        string    `bson:"_id,omitempty"` // MongoDB ObjectID, primary key
 	Name      string    `bson:"name" json:"name"`
-	CreatedAt time.Time `bson:"name" json:"name"`
+	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }

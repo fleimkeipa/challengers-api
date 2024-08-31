@@ -10,6 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var chCollection = "challenges"
+
 type ChallengeRepository struct {
 	db *mongo.Database
 }
@@ -23,7 +25,7 @@ func NewChallengeRepository(db *mongo.Database) *ChallengeRepository {
 func (rc *ChallengeRepository) Create(ctx context.Context, challenge model.Challenge) (model.Challenge, error) {
 	query, err := rc.
 		db.
-		Collection("users").
+		Collection(chCollection).
 		InsertOne(ctx, &challenge)
 	if err != nil {
 		return model.Challenge{}, fmt.Errorf("failed to create user: %w", err)
