@@ -8,12 +8,12 @@ import (
 )
 
 type UserUC struct {
-	repo interfaces.UserInterfaces
+	userRepo interfaces.UserInterfaces
 }
 
 func NewUserUC(repo interfaces.UserInterfaces) *UserUC {
 	return &UserUC{
-		repo: repo,
+		userRepo: repo,
 	}
 }
 
@@ -24,15 +24,15 @@ func (rc *UserUC) Create(ctx context.Context, user model.User) (model.User, erro
 	}
 	user.Password = hashedPassword
 
-	return rc.repo.Create(ctx, user)
+	return rc.userRepo.Create(ctx, user)
 }
 
 func (rc *UserUC) GetUserByUsername(ctx context.Context, username string) (model.User, error) {
-	return rc.repo.GetUserByUsername(ctx, username)
+	return rc.userRepo.GetUserByUsername(ctx, username)
 }
 
 func (rc *UserUC) Get(ctx context.Context, opts model.UserFindOpts) ([]model.User, error) {
-	users, err := rc.repo.Get(ctx, opts)
+	users, err := rc.userRepo.Get(ctx, opts)
 	if err != nil {
 		return []model.User{}, err
 	}
