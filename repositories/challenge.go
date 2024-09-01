@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/fleimkeipa/challengers-api/model"
 
@@ -49,10 +50,11 @@ func (rc *ChallengeRepository) Update(ctx context.Context, challenge model.Chall
 		return model.Challenge{}, fmt.Errorf("failed to convert id: %w", err)
 	}
 
+	var filter = bson.M{"_id": oID}
 	query, err := rc.
 		db.
 		Collection(chCollection).
-		UpdateOne(ctx, &challenge, bson.M{"_id": oID})
+		UpdateOne(ctx, &challenge, filter)
 	if err != nil {
 		return model.Challenge{}, fmt.Errorf("failed to create user: %w", err)
 	}
@@ -62,4 +64,32 @@ func (rc *ChallengeRepository) Update(ctx context.Context, challenge model.Chall
 	}
 
 	return challenge, nil
+}
+
+func (rc *ChallengeRepository) Delete(ctx context.Context, id string) error {
+	oID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return fmt.Errorf("failed to convert id: %w", err)
+	}
+
+	var filter = bson.M{"_id": oID}
+	var updater = bson.M{
+		"$set": bson.M{
+			"deleted_at": time.Now(),
+			"is_active":  0,
+		},
+	}
+	query, err := rc.
+		db.
+		Collection(chCollection).
+		UpdateOne(ctx, filter, updater)
+	if err != nil {
+		return fmt.Errorf("failed to create user: %w", err)
+	}
+
+	if query.MatchedCount == 0 {
+		return fmt.Errorf("not found challenge with id: %v", id)
+	}
+
+	return nil
 }

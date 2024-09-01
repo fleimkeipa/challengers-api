@@ -9,4 +9,5 @@ import (
 type ChallengeInterfaces interface {
 	Create(context.Context, model.Challenge) (model.Challenge, error)
 	Update(context.Context, model.Challenge) (model.Challenge, error)
+	Delete(context.Context, string) error
 }
