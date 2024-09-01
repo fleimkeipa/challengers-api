@@ -58,3 +58,13 @@ func (rc *ChallengeHandlers) Update(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, echo.Map{"challenge": challenge.Name})
 }
+
+func (rc *ChallengeHandlers) Delete(c echo.Context) error {
+	var id = c.QueryParam("id")
+
+	if err := rc.chUC.Delete(c.Request().Context(), id); err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"challenge": "deleted succesfully"})
+}

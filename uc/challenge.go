@@ -29,3 +29,7 @@ func (rc *ChallengeUC) Update(ctx context.Context, challenge model.Challenge) (m
 
 	return rc.repo.Update(ctx, challenge)
 }
+
+func (rc *ChallengeUC) Delete(ctx context.Context, id string) error {
+	return rc.repo.Delete(ctx, id)
+}
