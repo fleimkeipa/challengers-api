@@ -33,3 +33,7 @@ func (rc *ChallengeUC) Update(ctx context.Context, challenge model.Challenge) (m
 func (rc *ChallengeUC) Delete(ctx context.Context, id string) error {
 	return rc.repo.Delete(ctx, id)
 }
+
+func (rc *ChallengeUC) GetByID(ctx context.Context, id string) (model.Challenge, error) {
+	return rc.repo.GetByID(ctx, id)
+}

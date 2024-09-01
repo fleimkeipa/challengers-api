@@ -68,3 +68,14 @@ func (rc *ChallengeHandlers) Delete(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, echo.Map{"challenge": "deleted succesfully"})
 }
+
+func (rc *ChallengeHandlers) GetByID(c echo.Context) error {
+	var id = c.QueryParam("id")
+
+	challenge, err := rc.chUC.GetByID(c.Request().Context(), id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"data": challenge})
+}
