@@ -11,7 +11,7 @@ import (
 
 func MongoConnect() (*mongo.Database, error) {
 	var uri = "mongodb://localhost:27017"
-	if stage() {
+	if isStageContainer() {
 		fmt.Println("Program is running inside a container.")
 		uri = "mongodb://mongodb:27017"
 	}
@@ -34,7 +34,7 @@ func MongoConnect() (*mongo.Database, error) {
 	return client.Database(os.Getenv("DATABASE_NAME")), nil
 }
 
-func stage() bool {
-	_, isVirtual := os.LookupEnv("HOSTNAME")
-	return isVirtual
+func isStageContainer() bool {
+	_, isContainer := os.LookupEnv("HOSTNAME")
+	return isContainer
 }
