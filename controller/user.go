@@ -80,6 +80,29 @@ func (rc *UserHandlers) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{"token": jwt, "username": input.Username, "message": "Successfully logged in"})
 }
 
-func Welcome(c echo.Context) error {
-	return c.JSON(http.StatusOK, "completed")
+func (rc *UserHandlers) Get(c echo.Context) error {
+	var opts = getUserFindOpts(c)
+
+	challenges, err := rc.userUC.Get(c.Request().Context(), opts)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"total": len(challenges),
+		"pagination": echo.Map{
+			"limit": opts.Limit,
+			"skip":  opts.Skip,
+		},
+		"data": challenges,
+	})
+}
+
+func getUserFindOpts(c echo.Context) model.UserFindOpts {
+	return model.UserFindOpts{
+		PaginationOpts: getPagination(c),
+		RoleID:         getFilter(c, "role_id"),
+		Username:       getFilter(c, "username"),
+		Email:          getFilter(c, "email"),
+	}
 }

@@ -29,3 +29,10 @@ func HashPassword(password string) (string, error) {
 
 	return string(bytes), nil
 }
+
+type UserFindOpts struct {
+	PaginationOpts
+	RoleID   Filter
+	Username Filter
+	Email    Filter
+}

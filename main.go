@@ -52,7 +52,7 @@ func serveApplication() {
 
 	var adminRoutes = e.Group("/admin")
 	adminRoutes.Use(util.JWTAuth)
-	adminRoutes.GET("", controller.Welcome)
+	adminRoutes.GET("", userHandlers.Get)
 
 	var challengeRoutes = e.Group("challenge")
 	challengeRoutes.Use(util.JWTAuthChallenger)

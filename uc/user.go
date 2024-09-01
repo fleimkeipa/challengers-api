@@ -30,3 +30,7 @@ func (rc *UserUC) Create(ctx context.Context, user model.User) (model.User, erro
 func (rc *UserUC) GetUserByUsername(ctx context.Context, username string) (model.User, error) {
 	return rc.repo.GetUserByUsername(ctx, username)
 }
+
+func (rc *UserUC) Get(ctx context.Context, opts model.UserFindOpts) ([]model.User, error) {
+	return rc.repo.Get(ctx, opts)
+}
