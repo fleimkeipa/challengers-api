@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var userCollection = "users"
@@ -55,4 +56,47 @@ func (rc *UserRepository) GetUserByUsername(ctx context.Context, username string
 	}
 
 	return *user, nil
+}
+
+func (rc *UserRepository) Get(ctx context.Context, opts model.UserFindOpts) ([]model.User, error) {
+	findOpts, filter := userFilters(opts)
+
+	cur, err := rc.
+		db.
+		Collection(chCollection).
+		Find(ctx, filter, &findOpts)
+	if err != nil {
+		return []model.User{}, err
+	}
+
+	var users = make([]model.User, 0)
+	if err := cur.All(ctx, &users); err != nil {
+		return []model.User{}, err
+	}
+
+	return users, nil
+}
+
+func userFilters(opts model.UserFindOpts) (options.FindOptions, bson.M) {
+	var filter = bson.M{}
+	var limit = int64(opts.Limit)
+	if limit == 0 {
+		limit = 30
+	}
+	var skip = int64(opts.Skip)
+	var findOpts = options.FindOptions{
+		Limit: &limit,
+		Skip:  &skip,
+	}
+
+	switch {
+	case opts.Username.IsActive:
+		filter = bson.M{"username": opts.Username.Value}
+	case opts.RoleID.IsActive:
+		filter = bson.M{"role_id": opts.RoleID.Value}
+	case opts.Email.IsActive:
+		filter = bson.M{"email": opts.Email.Value}
+	}
+
+	return findOpts, filter
 }
