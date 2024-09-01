@@ -34,6 +34,10 @@ func (rc *ChallengeUC) Delete(ctx context.Context, id string) error {
 	return rc.repo.Delete(ctx, id)
 }
 
+func (rc *ChallengeUC) Get(ctx context.Context, opts model.ChallengeFindOpts) ([]model.Challenge, error) {
+	return rc.repo.Get(ctx, opts)
+}
+
 func (rc *ChallengeUC) GetByID(ctx context.Context, id string) (model.Challenge, error) {
 	return rc.repo.GetByID(ctx, id)
 }

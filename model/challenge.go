@@ -15,3 +15,12 @@ type Challenge struct {
 	UpdatedAt time.Time `bson:"updated_at,omitempty" json:"updated_at,omitempty"`
 	DeletedAt time.Time `bson:"deleted_at,omitempty" json:"deleted_at,omitempty"`
 }
+
+type ChallengeFindOpts struct {
+	PaginationOpts
+	Name      Filter
+	IsActive  Filter
+	CreatedAt Filter
+	UpdatedAt Filter
+	DeletedAt Filter
+}
