@@ -63,7 +63,7 @@ func (rc *UserRepository) Get(ctx context.Context, opts model.UserFindOpts) ([]m
 
 	cur, err := rc.
 		db.
-		Collection(chCollection).
+		Collection(userCollection).
 		Find(ctx, filter, &findOpts)
 	if err != nil {
 		return []model.User{}, err
