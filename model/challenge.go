@@ -11,5 +11,5 @@ type Challenge struct {
 	ID        string    `bson:"_id,omitempty"` // MongoDB ObjectID, primary key
 	Name      string    `bson:"name" json:"name"`
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time `bson:"updated_At" json:"updated_At"`
+	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
