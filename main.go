@@ -59,7 +59,8 @@ func serveApplication() {
 	challengeRoutes.POST("", challengeHandlers.Create)
 	challengeRoutes.PATCH("", challengeHandlers.Update)
 	challengeRoutes.DELETE("", challengeHandlers.Delete)
-	challengeRoutes.GET("", challengeHandlers.GetByID)
+	challengeRoutes.GET("", challengeHandlers.Get)
+	challengeRoutes.GET("/:id", challengeHandlers.GetByID)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
