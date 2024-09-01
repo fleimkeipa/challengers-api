@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var chCollection = "challenges"
@@ -92,6 +93,53 @@ func (rc *ChallengeRepository) Delete(ctx context.Context, id string) error {
 	}
 
 	return nil
+}
+
+func facetFilter(opts model.ChallengeFindOpts) (options.FindOptions, bson.M) {
+	var filter = bson.M{}
+	var limit = int64(opts.Limit)
+	if limit == 0 {
+		limit = 30
+	}
+	var skip = int64(opts.Skip)
+	var findOpts = options.FindOptions{
+		Limit: &limit,
+		Skip:  &skip,
+	}
+
+	switch {
+	case opts.Name.IsActive:
+		filter = bson.M{"name": opts.Name.Value}
+	case opts.IsActive.IsActive:
+		filter = bson.M{"is_active": opts.IsActive.Value}
+	case opts.CreatedAt.IsActive:
+		filter = bson.M{"created_at": opts.CreatedAt.Value}
+	case opts.UpdatedAt.IsActive:
+		filter = bson.M{"updated_at": opts.UpdatedAt.Value}
+	case opts.DeletedAt.IsActive:
+		filter = bson.M{"deleted_at": opts.DeletedAt.Value}
+	}
+
+	return findOpts, filter
+}
+
+func (rc *ChallengeRepository) Get(ctx context.Context, opts model.ChallengeFindOpts) ([]model.Challenge, error) {
+	findOpts, filter := facetFilter(opts)
+
+	cur, err := rc.
+		db.
+		Collection(chCollection).
+		Find(ctx, filter, &findOpts)
+	if err != nil {
+		return []model.Challenge{}, err
+	}
+
+	var challenges = make([]model.Challenge, 0)
+	if err := cur.All(ctx, &challenges); err != nil {
+		return []model.Challenge{}, err
+	}
+
+	return challenges, nil
 }
 
 func (rc *ChallengeRepository) GetByID(ctx context.Context, id string) (model.Challenge, error) {
