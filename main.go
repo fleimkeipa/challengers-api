@@ -57,6 +57,7 @@ func serveApplication() {
 	var challengeRoutes = e.Group("challenge")
 	challengeRoutes.Use(util.JWTAuthChallenger)
 	challengeRoutes.POST("", challengeHandlers.Create)
+	challengeRoutes.PATCH("", challengeHandlers.Update)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

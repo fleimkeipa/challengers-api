@@ -23,3 +23,9 @@ func (rc *ChallengeUC) Create(ctx context.Context, challenge model.Challenge) (m
 
 	return rc.repo.Create(ctx, challenge)
 }
+
+func (rc *ChallengeUC) Update(ctx context.Context, challenge model.Challenge) (model.Challenge, error) {
+	challenge.UpdatedAt = time.Now()
+
+	return rc.repo.Update(ctx, challenge)
+}
