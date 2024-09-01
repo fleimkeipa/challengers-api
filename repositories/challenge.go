@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	"github.com/fleimkeipa/challengers-api/model"
+
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -37,6 +39,27 @@ func (rc *ChallengeRepository) Create(ctx context.Context, challenge model.Chall
 	}
 
 	challenge.ID = oid.Hex()
+
+	return challenge, nil
+}
+
+func (rc *ChallengeRepository) Update(ctx context.Context, challenge model.Challenge) (model.Challenge, error) {
+	oID, err := primitive.ObjectIDFromHex(challenge.ID)
+	if err != nil {
+		return model.Challenge{}, fmt.Errorf("failed to convert id: %w", err)
+	}
+
+	query, err := rc.
+		db.
+		Collection(chCollection).
+		UpdateOne(ctx, &challenge, bson.M{"_id": oID})
+	if err != nil {
+		return model.Challenge{}, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	if query.MatchedCount == 0 {
+		return model.Challenge{}, fmt.Errorf("not found challenge with id: %v", challenge.ID)
+	}
 
 	return challenge, nil
 }
