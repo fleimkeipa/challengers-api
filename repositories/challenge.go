@@ -93,3 +93,22 @@ func (rc *ChallengeRepository) Delete(ctx context.Context, id string) error {
 
 	return nil
 }
+
+func (rc *ChallengeRepository) GetByID(ctx context.Context, id string) (model.Challenge, error) {
+	oID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return model.Challenge{}, fmt.Errorf("failed to convert id: %w", err)
+	}
+
+	var challenge = new(model.Challenge)
+	err = rc.
+		db.
+		Collection(chCollection).
+		FindOne(ctx, bson.M{"_id": oID}).
+		Decode(challenge)
+	if err != nil {
+		return model.Challenge{}, err
+	}
+
+	return *challenge, nil
+}
