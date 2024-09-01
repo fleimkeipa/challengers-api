@@ -32,5 +32,18 @@ func (rc *UserUC) GetUserByUsername(ctx context.Context, username string) (model
 }
 
 func (rc *UserUC) Get(ctx context.Context, opts model.UserFindOpts) ([]model.User, error) {
-	return rc.repo.Get(ctx, opts)
+	users, err := rc.repo.Get(ctx, opts)
+	if err != nil {
+		return []model.User{}, err
+	}
+
+	users = rc.deleteCreds(users)
+	return users, err
+}
+
+func (rc *UserUC) deleteCreds(users []model.User) []model.User {
+	for i := range users {
+		users[i].Password = ""
+	}
+	return users
 }
