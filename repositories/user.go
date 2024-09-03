@@ -78,17 +78,9 @@ func (rc *UserRepository) Get(ctx context.Context, opts model.UserFindOpts) ([]m
 }
 
 func userFilters(opts model.UserFindOpts) (options.FindOptions, bson.M) {
-	var filter = bson.M{}
-	var limit = int64(opts.Limit)
-	if limit == 0 {
-		limit = 30
-	}
-	var skip = int64(opts.Skip)
-	var findOpts = options.FindOptions{
-		Limit: &limit,
-		Skip:  &skip,
-	}
+	var findOpts = getPaginationOpts(opts.Limit, opts.Skip)
 
+	var filter = bson.M{}
 	switch {
 	case opts.Username.IsActive:
 		filter = bson.M{"username": opts.Username.Value}

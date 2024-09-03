@@ -134,17 +134,9 @@ func (rc *ChallengeRepository) GetByID(ctx context.Context, id string) (model.Ch
 }
 
 func challengeFilters(opts model.ChallengeFindOpts) (options.FindOptions, bson.M) {
-	var filter = bson.M{}
-	var limit = int64(opts.Limit)
-	if limit == 0 {
-		limit = 30
-	}
-	var skip = int64(opts.Skip)
-	var findOpts = options.FindOptions{
-		Limit: &limit,
-		Skip:  &skip,
-	}
+	var findOpts = getPaginationOpts(opts.Limit, opts.Skip)
 
+	var filter = bson.M{}
 	switch {
 	case opts.Name.IsActive:
 		filter = bson.M{"name": opts.Name.Value}
