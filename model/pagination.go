@@ -6,6 +6,6 @@ type PaginationOpts struct {
 }
 
 type Filter struct {
-	IsActive bool
+	IsSended bool
 	Value    string
 }

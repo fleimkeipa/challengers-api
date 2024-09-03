@@ -28,7 +28,7 @@ func getFilter(c echo.Context, query string) model.Filter {
 	}
 
 	return model.Filter{
-		IsActive: true,
+		IsSended: true,
 		Value:    param,
 	}
 }
