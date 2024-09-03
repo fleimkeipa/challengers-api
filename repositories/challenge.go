@@ -139,15 +139,15 @@ func challengeFilters(opts model.ChallengeFindOpts) (options.FindOptions, bson.M
 	var filter = bson.M{}
 	switch {
 	case opts.Name.IsSended:
-		filter = bson.M{"name": opts.Name.Value}
+		filter = getFilterValues("name", opts.Name.Value)
 	case opts.IsActive.IsSended:
-		filter = bson.M{"is_active": opts.IsActive.Value}
+		filter = getFilterValues("is_active", opts.IsActive.Value)
 	case opts.CreatedAt.IsSended:
-		filter = bson.M{"created_at": opts.CreatedAt.Value}
+		filter = getFilterValues("created_at", opts.CreatedAt.Value)
 	case opts.UpdatedAt.IsSended:
-		filter = bson.M{"updated_at": opts.UpdatedAt.Value}
+		filter = getFilterValues("updated_at", opts.UpdatedAt.Value)
 	case opts.DeletedAt.IsSended:
-		filter = bson.M{"deleted_at": opts.DeletedAt.Value}
+		filter = getFilterValues("deleted_at", opts.DeletedAt.Value)
 	}
 
 	return findOpts, filter
