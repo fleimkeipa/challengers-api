@@ -82,11 +82,11 @@ func userFilters(opts model.UserFindOpts) (options.FindOptions, bson.M) {
 
 	var filter = bson.M{}
 	switch {
-	case opts.Username.IsActive:
+	case opts.Username.IsSended:
 		filter = bson.M{"username": opts.Username.Value}
-	case opts.RoleID.IsActive:
+	case opts.RoleID.IsSended:
 		filter = bson.M{"role_id": opts.RoleID.Value}
-	case opts.Email.IsActive:
+	case opts.Email.IsSended:
 		filter = bson.M{"email": opts.Email.Value}
 	}
 
